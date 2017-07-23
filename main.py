@@ -1,7 +1,10 @@
 import sqlite3
 from tkinter import *
+import tkinter.messagebox
+import re
 
 stop = False
+dbname = 'MyFirstSQLApp'
 
 class GUI:
     def __init__(self):
@@ -38,24 +41,45 @@ class GUI:
         self.phone = self.entPhone.get()
         self.email = self.entEmail.get()
         self.password = self.entPassword.get()
-        self.db = sqlite3.connect('rowafean')
+        self.db = sqlite3.connect(dbname)
         print("Connected successfully")
         self.cursor = self.db.cursor()
 
-        try:
-            self.cursor.execute('''INSERT INTO users(name, phone, email, password) VALUES(?,?,?,?) ''',
-                                (self.name, self.phone, self.email, self.password))
-            print("User Inserted")
+        if len(self.name) != 0:
+            if len(self.phone)!= 0:
+                if len(self.email) != 0:
+                    if len(self.password) != 0:
+                        if re.match("[^@]+@[^@]+\.[^@]+", self.email):
+                            try:
+                                self.cursor.execute('''INSERT INTO users(name, phone, email, password) VALUES(?,?,?,?) ''',
+                                                    (self.name, self.phone, self.email, self.password))
+                                print("User Inserted")
+                                tkinter.messagebox.showinfo("Success", "User successfully added!")
 
-        except sqlite3.IntegrityError:
-            print("Email already exists")
-            stop = True
+                            except sqlite3.IntegrityError:
+                                print("Email already exists")
+                                tkinter.messagebox.showwarning("Error", "An account with this email already exists!")
+                                stop = True
+
+                        else:
+                            tkinter.messagebox.showwarning("Warning", "You have to enter a valid email address!")
+                    else:
+                        tkinter.messagebox.showwarning("Warning", "You have to fill all the fields!")
+                else:
+                    tkinter.messagebox.showwarning("Warning", "You have to fill all the fields!")
+            else:
+                tkinter.messagebox.showwarning("Warning", "You have to fill all the fields!")
+        else:
+            tkinter.messagebox.showwarning("Warning", "You have to fill all the fields!")
 
         self.db.commit()
+        self.cursor.execute("SELECT id, name FROM users ORDER BY id")
+        self.results = self.cursor.fetchall()
+        print(self.results)
 
 class dbConnect:
     def __init__(self):
-        self.db = sqlite3.connect('rowafean')
+        self.db = sqlite3.connect(dbname)
         print("Connected successfully")
         self.cursor = self.db.cursor()
         try:
