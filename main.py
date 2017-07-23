@@ -18,7 +18,7 @@ class GUI:
         self.entEmail = Entry(self.window, width=25, bd=5)
         self.labPassword = Label(self.window, text="Password:", bd=5)
         self.entPassword = Entry(self.window, width=25, show="*", bd=5)
-        self.submitbtn = Button(self.window, text="Submit", width="30", bd=5)
+        self.submitbtn = Button(self.window, text="Submit", width="30", bd=5, command=self.insert)
 
         self.window.grid(row=0, column=0, ipadx=5, ipady=5, pady=5, padx=5)
         self.labName.grid(row=0, column=0)
@@ -31,12 +31,10 @@ class GUI:
         self.entPassword.grid(row=3, column=1)
         self.submitbtn.grid(row=4, column=0, columnspan=2)
 
-        self.submitbtn.bind("<Button-1>", self.insert)
-
         self.root.title("Add User")
         self.root.mainloop()
 
-    def insert(self, event):
+    def insert(self):
         self.name = self.entName.get()
         self.phone = self.entPhone.get()
         self.email = self.entEmail.get()
@@ -55,6 +53,11 @@ class GUI:
                                                     (self.name, self.phone, self.email, self.password))
                                 print("User Inserted")
                                 tkinter.messagebox.showinfo("Success", "User successfully added!")
+                                self.entEmail.delete(0, 'end')
+                                self.entPassword.delete(0, 'end')
+                                self.entPhone.delete(0, 'end')
+                                self.entName.delete(0, 'end')
+                                self.submitbtn.configure(relief=RAISED)
 
                             except sqlite3.IntegrityError:
                                 print("Email already exists")
