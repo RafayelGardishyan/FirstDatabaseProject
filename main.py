@@ -2,6 +2,7 @@ import sqlite3
 from tkinter import *
 import tkinter.messagebox
 import re
+from emailsender import send_email
 
 stop = False
 dbname = 'MyFirstSQLApp'
@@ -58,6 +59,8 @@ class GUI:
                                 self.entPhone.delete(0, 'end')
                                 self.entName.delete(0, 'end')
                                 self.submitbtn.configure(relief=RAISED)
+                                send_email(self.email, self.name)
+
 
                             except sqlite3.IntegrityError:
                                 print("Email already exists")
@@ -76,7 +79,7 @@ class GUI:
             tkinter.messagebox.showwarning("Warning", "You have to fill all the fields!")
 
         self.db.commit()
-        self.cursor.execute("SELECT id, name FROM users ORDER BY id")
+        self.cursor.execute("SELECT name FROM users ORDER BY id")
         self.results = self.cursor.fetchall()
         print(self.results)
 
