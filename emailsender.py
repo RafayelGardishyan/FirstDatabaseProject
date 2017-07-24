@@ -3,8 +3,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 def send_email(email, name):
-    fromaddr = "rowafean@gmail.com"
-    password = "rowafean123"
+    fromaddr = "***@***.***"
+    password = "*********"
     toaddr = email
     msg = MIMEMultipart()
     msg['From'] = fromaddr
